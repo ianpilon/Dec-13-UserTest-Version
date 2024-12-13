@@ -121,7 +121,7 @@ const Index = () => {
             <h1 className="text-4xl font-bold tracking-tight">
               Evaluate customer research in seconds
             </h1>
-            <p className="text-lg text-gray-600">
+            <p className="text-lg text-gray-600 max-w-md mx-auto">
               Upload a file or enter text from a customer discovery interview to get deep analysis on your customers pain and get a problem solution fit score.
             </p>
           </div>
