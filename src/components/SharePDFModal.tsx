@@ -38,7 +38,7 @@ export function SharePDFModal({ isOpen, onClose, htmlContent, fileName }: ShareP
     setIsSending(true);
 
     try {
-      const response = await fetch('https://dec-13-usertest-version.onrender.com/api/share-pdf', {
+      const response = await fetch('/api/share-pdf', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
