@@ -8,13 +8,13 @@ import { Loader2 } from 'lucide-react';
 import { SummaryView } from '@/components/SummaryView';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { analyzeContent } from '@/lib/claude';
 import { extractTextFromPDF, transcribeMedia } from '@/lib/fileProcessing';
 
 const Index = () => {
   const [file, setFile] = useState<File | null>(null);
   const [mediaFile, setMediaFile] = useState<File | null>(null);
   const [text, setText] = useState('');
+  const [apiKey, setApiKey] = useState('');
   const [showSummary, setShowSummary] = useState(false);
   const { toast } = useToast();
 
@@ -33,6 +33,15 @@ const Index = () => {
 
   const handleAnalysis = async (type: string) => {
     try {
+      if (!apiKey) {
+        toast({
+          title: "API Key Required",
+          description: "Please enter your Anthropic API key first",
+          variant: "destructive",
+        });
+        return;
+      }
+
       let contentToAnalyze = text;
       
       if (file) {
@@ -41,12 +50,31 @@ const Index = () => {
         contentToAnalyze = await transcribeMedia(mediaFile);
       }
 
-      const result = await analyzeContent({
-        content: contentToAnalyze,
-        type: type as any
+      // Direct API call to Anthropic
+      const response = await fetch('https://api.anthropic.com/v1/messages', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'anthropic-api-key': apiKey,
+          'anthropic-version': '2023-06-01'
+        },
+        body: JSON.stringify({
+          model: 'claude-3-sonnet-20240229',
+          max_tokens: 4000,
+          messages: [{
+            role: 'user',
+            content: `${type === 'jtbd-analysis' ? 'Analyze this customer research and extract the jobs to be done:' : 'Analyze this customer research and provide insights:'}\n\n${contentToAnalyze}`
+          }]
+        })
       });
 
-      return result;
+      if (!response.ok) {
+        const error = await response.text();
+        throw new Error(`Anthropic API error: ${response.status} ${error}`);
+      }
+
+      const result = await response.json();
+      return result.content[0].text;
     } catch (error) {
       console.error('Analysis error:', error);
       toast({
@@ -101,6 +129,18 @@ const Index = () => {
             <p className="text-lg text-gray-600">
               Upload a file, video, audio or enter text to get deep analysis on your customers pain and get a problem solution fit score.
             </p>
+            <div className="w-full max-w-xl mt-4">
+              <input
+                type="text"
+                placeholder="Enter your Anthropic API key (starts with sk-ant...)"
+                className="w-full p-2 border rounded"
+                value={apiKey}
+                onChange={(e) => setApiKey(e.target.value)}
+              />
+              <p className="text-sm text-gray-500 mt-1">
+                Your API key stays in your browser and is only used to make direct API calls to Anthropic.
+              </p>
+            </div>
           </div>
         </header>
 
