@@ -124,15 +124,17 @@ const Index = () => {
             <p className="text-lg text-gray-600">
               Upload a file, video, audio or enter text to get deep analysis on your customers pain and get a problem solution fit score.
             </p>
-            <div className="w-full max-w-xl mt-4">
+          </div>
+          <div className="w-full max-w-md mx-auto mt-6">
+            <div className="space-y-2">
               <input
                 type="text"
                 placeholder="Enter your Anthropic API key (starts with sk-ant...)"
-                className="w-full p-2 border rounded"
+                className="w-full p-3 border rounded-lg bg-white/50 backdrop-blur-sm shadow-sm focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
               />
-              <p className="text-sm text-gray-500 mt-1">
+              <p className="text-sm text-gray-500 text-center">
                 Your API key stays in your browser and is only used to make direct API calls to Anthropic.
               </p>
             </div>
