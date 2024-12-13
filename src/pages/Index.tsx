@@ -9,6 +9,7 @@ import { SummaryView } from '@/components/SummaryView';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
 import { extractTextFromPDF, transcribeMedia } from '@/lib/fileProcessing';
+import { ANALYSIS_PROMPTS } from '@/lib/claude';
 
 const Index = () => {
   const [file, setFile] = useState<File | null>(null);
@@ -59,6 +60,7 @@ const Index = () => {
         body: JSON.stringify({
           content: contentToAnalyze,
           type,
+          prompt: ANALYSIS_PROMPTS[type],
           apiKey
         })
       });
