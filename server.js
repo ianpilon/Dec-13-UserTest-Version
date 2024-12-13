@@ -14,7 +14,11 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: ['https://dec-13-user-test-version.vercel.app', 'http://localhost:5173'],
+  methods: ['GET', 'POST'],
+  credentials: true
+}));
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 
