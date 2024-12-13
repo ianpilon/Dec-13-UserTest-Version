@@ -122,7 +122,7 @@ const Index = () => {
               Evaluate customer research in seconds
             </h1>
             <p className="text-lg text-gray-600">
-              Upload a file, video, audio or enter text to get deep analysis on your customers pain and get a problem solution fit score.
+              Upload a file or enter text from a customer discovery interview to get deep analysis on your customers pain and get a problem solution fit score.
             </p>
           </div>
           <div className="w-full max-w-md mx-auto mt-6">
