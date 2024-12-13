@@ -50,31 +50,26 @@ const Index = () => {
         contentToAnalyze = await transcribeMedia(mediaFile);
       }
 
-      // Direct API call to Anthropic
-      const response = await fetch('https://api.anthropic.com/v1/messages', {
+      // Call our API route instead of Anthropic directly
+      const response = await fetch('/api/analyze', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'anthropic-api-key': apiKey,
-          'anthropic-version': '2023-06-01'
         },
         body: JSON.stringify({
-          model: 'claude-3-sonnet-20240229',
-          max_tokens: 4000,
-          messages: [{
-            role: 'user',
-            content: `${type === 'jtbd-analysis' ? 'Analyze this customer research and extract the jobs to be done:' : 'Analyze this customer research and provide insights:'}\n\n${contentToAnalyze}`
-          }]
+          content: contentToAnalyze,
+          type,
+          apiKey
         })
       });
 
       if (!response.ok) {
-        const error = await response.text();
-        throw new Error(`Anthropic API error: ${response.status} ${error}`);
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to analyze content');
       }
 
       const result = await response.json();
-      return result.content[0].text;
+      return result.analysis;
     } catch (error) {
       console.error('Analysis error:', error);
       toast({
